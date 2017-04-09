@@ -15,6 +15,9 @@ var paddle2Y = 400
 const PADDLE_HEIGHT = 100
 const PADDLE_THICKNESS = 10
 
+var player1Score = 0
+var player2Score = 0
+
 function calculateMousePosition(evt) {
    var rect = canvas.getBoundingClientRect() // black rectangle area
    var root = document.documentElement
@@ -51,15 +54,29 @@ function ballReset() {
    ballY = canvas.height/2
 }
 
+function computerMovement() {
+   var paddle2YCenter = paddle2Y + PADDLE_HEIGHT/2
+   if (paddle2YCenter < ballY-35) {
+      paddle2Y += 6
+   } else if (paddle2YCenter > ballY+35) {
+      paddle2Y -=6
+   }
+}
+
 function moveEverything() {
+
+   computerMovement()
+
    ballX += ballSpeedX
    ballY += ballSpeedY
+
    // If ball goes outside of canvas, reset position
    if (ballX < 0) {
       if ((ballY > paddle1Y) && (ballY < paddle1Y + PADDLE_HEIGHT)) {
          ballSpeedX = -ballSpeedX
       } else {
          ballReset()
+         player2Score++
       }
    }
    if (ballX > canvas.width) {
@@ -67,6 +84,7 @@ function moveEverything() {
          ballSpeedX = -ballSpeedX
       } else {
          ballReset()
+         player1Score++
       }
    }
    if (ballY > canvas.height || ballY < 0) {
@@ -86,6 +104,9 @@ function drawEverything() {
 
    // Draw ball
    colorCircle(ballX,ballY,10,'white')
+
+   canvasContext.fillText(player1Score,100,100)
+   canvasContext.fillText(player2Score,canvas.width - 100,100)
 }
 
 function colorCircle(centerX,centerY,radius,color) {
