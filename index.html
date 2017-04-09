@@ -35,7 +35,20 @@ function drawEverything() {
    colorRect(0,210,10,100,'white')
 
    // Draw ball
-   colorRect(ballX,100,10,10,'red')
+   colorCircle(ballX,150,10,'white')
+}
+
+function colorCircle(centerX,centerY,radius,color) {
+   canvasContext.fillStyle = color
+   canvasContext.beginPath()
+   canvasContext.arc(
+      centerX, // x position (center of circle)
+      centerY,   // y position (center of circle)
+      radius,    // radius of circle (pixels)
+      0,         // start angle
+      Math.PI*2, // end angle
+      true)      // true = draw counter-clockwise
+   canvasContext.fill()
 }
 
 function colorRect(leftX,topY,width,height,drawColor) {
