@@ -1,13 +1,31 @@
 <html>
-Andrew
-<br>
+
 <canvas id="gameCanvas" width=800 height=600></canvas>
 
 <script>
 var canvas
 var canvasContext
 var ballX = 50
-var ballSpeedX = 5
+var ballY = 50
+var ballSpeedX = 10
+var ballSpeedY = 4
+
+var paddle1Y = 400
+const PADDLE_HEIGHT = 100
+
+function calculateMousePosition(evt) {
+   var rect = canvas.getBoundingClientRect() // black rectangle area
+   var root = document.documentElement
+   // Get X and Y mouse position, and then subtract the rect coordinates
+   // and subtract the amount (if any) the user has scrolled in browser
+   // so that the X and Y position are relative to the top left of black rectangle
+   var mouseX = evt.clientX - rect.left - root.scrollLeft
+   var mouseY = evt.clientY - rect.top - root.scrollTop
+   return {
+      x:mouseX,
+      y:mouseY
+   }
+}
 
 window.onload = function() {
    canvas = document.getElementById("gameCanvas")
@@ -17,13 +35,23 @@ window.onload = function() {
       drawEverything()
       moveEverything()
    },1000/framesPerSecond) // ms
+
+   canvas.addEventListener('mousemove',
+            function(evt) {
+               var mousePos = calculateMousePosition(evt)
+               paddle1Y = mousePos.y - PADDLE_HEIGHT/2
+            })
 }
 
 function moveEverything() {
    ballX += ballSpeedX
+   ballY += ballSpeedY
    // If ball goes outside of canvas, reverse direction
    if (ballX > canvas.width || ballX < 0) {
       ballSpeedX = -ballSpeedX // reverse direction
+   }
+   if (ballY > canvas.height || ballY < 0) {
+      ballSpeedY = -ballSpeedY // reverse direction
    }
 }
 
@@ -32,10 +60,10 @@ function drawEverything() {
    colorRect(0,0,canvas.width,canvas.height,'black') // x,y,w,h,color
 
    // Left player paddle
-   colorRect(0,210,10,100,'white')
+   colorRect(0,paddle1Y,10,100,'white')
 
    // Draw ball
-   colorCircle(ballX,150,10,'white')
+   colorCircle(ballX,ballY,10,'white')
 }
 
 function colorCircle(centerX,centerY,radius,color) {
