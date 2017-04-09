@@ -11,7 +11,9 @@ var ballSpeedX = 10
 var ballSpeedY = 4
 
 var paddle1Y = 400
+var paddle2Y = 400
 const PADDLE_HEIGHT = 100
+const PADDLE_THICKNESS = 10
 
 function calculateMousePosition(evt) {
    var rect = canvas.getBoundingClientRect() // black rectangle area
@@ -43,12 +45,29 @@ window.onload = function() {
             })
 }
 
+function ballReset() {
+   ballSpeedX = -ballSpeedX // reverse direction
+   ballX = canvas.width/2
+   ballY = canvas.height/2
+}
+
 function moveEverything() {
    ballX += ballSpeedX
    ballY += ballSpeedY
-   // If ball goes outside of canvas, reverse direction
-   if (ballX > canvas.width || ballX < 0) {
-      ballSpeedX = -ballSpeedX // reverse direction
+   // If ball goes outside of canvas, reset position
+   if (ballX < 0) {
+      if ((ballY > paddle1Y) && (ballY < paddle1Y + PADDLE_HEIGHT)) {
+         ballSpeedX = -ballSpeedX
+      } else {
+         ballReset()
+      }
+   }
+   if (ballX > canvas.width) {
+      if ((ballY > paddle2Y) && (ballY < paddle2Y + PADDLE_HEIGHT)) {
+         ballSpeedX = -ballSpeedX
+      } else {
+         ballReset()
+      }
    }
    if (ballY > canvas.height || ballY < 0) {
       ballSpeedY = -ballSpeedY // reverse direction
@@ -60,7 +79,10 @@ function drawEverything() {
    colorRect(0,0,canvas.width,canvas.height,'black') // x,y,w,h,color
 
    // Left player paddle
-   colorRect(0,paddle1Y,10,100,'white')
+   colorRect(0,paddle1Y,PADDLE_THICKNESS,100,'white')
+
+   // Right computer paddle
+   colorRect(canvas.width-PADDLE_THICKNESS,paddle2Y,PADDLE_THICKNESS,100,'white')
 
    // Draw ball
    colorCircle(ballX,ballY,10,'white')
